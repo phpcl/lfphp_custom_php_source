@@ -4,7 +4,7 @@
 
 * To build the image:
 ```
-docker build docker build -t USER/IMAGE:TAG .
+docker build -t USER/IMAGE:TAG .
 ```
 * To run the image with a terminal window
 ```
