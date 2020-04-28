@@ -27,16 +27,4 @@ echo "Making and installing PHP ..."
 make
 make install
 
-echo "Making PHP available via FPM ..."
-install -v -m644 php.ini-production /etc/php.ini
-cp -v /etc/php-fpm.conf.default /etc/php-fpm.conf
-cp -v /etc/php-fpm.d/www.conf.default /etc/php-fpm.d/www.conf
-sed -i 's@php/includes"@&\ninclude_path = ".:/usr/lib/php"@' /etc/php.ini
-sed -i -e '/proxy_module/s/^#//' -e '/proxy_fcgi_module/s/^#//' /etc/httpd/httpd.conf
-echo 'ProxyPassMatch ^/(.*.php)$ fcgi://127.0.0.1:9000/srv/www/$1' >> /etc/httpd/httpd.conf
-sed -i 's/DirectoryIndex index.html/DirectoryIndex index.php index.html/' /etc/httpd/httpd.conf
-
-echo "Starting up services ..."
-/etc/init.d/mysql start
-/usr/sbin/php-fpm &
-/etc/init.d/httpd start
+echo "TODO: configure Apache to use PHP via FPM"
