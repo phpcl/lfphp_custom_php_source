@@ -63,7 +63,7 @@ make install
 #############################################################
 echo "Making PHP available via FPM ..."
 install -v -m644 php.ini-production /etc/php.ini
-mv -v /etc/php-fpm.conf{.default,}
+cp -v /etc/php-fpm.conf.default /etc/php-fpm.conf
 cp -v /etc/php-fpm.d/www.conf.default /etc/php-fpm.d/www.conf
 sed -i 's@php/includes"@&\ninclude_path = ".:/usr/lib/php"@' /etc/php.ini
 sed -i -e '/proxy_module/s/^#//' -e '/proxy_fcgi_module/s/^#//' /etc/httpd/httpd.conf
