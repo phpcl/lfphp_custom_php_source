@@ -1,4 +1,4 @@
-# PHP 7.4.6 LfPHP Source Compile Notes
+# PHP 8.0 LfPHP Source Compile Notes
 
 * Generally following this guide: https://linux-for-php-documentation.readthedocs.io/en/latest/basic_usage.html#compiling-php-from-source
 
@@ -6,9 +6,9 @@
 ```
 docker build -t USER/IMAGE:TAG .
 ```
-* To run the image with a terminal window
+* To run the image with a terminal window in background mode (e.g. when you exit the shell it continues running)
 ```
-docker run -it USER/IMAGE:TAG /bin/bash
+docker run -dit USER/IMAGE:TAG /bin/bash
 ```
 
 ## Dockerfile
@@ -27,31 +27,15 @@ RUN /tmp/init.sh
 ## Init Script
 ```
 #!/bin/bash
-
-#############################################################
-echo "Handling missing package libzip ..."
-wget https://libzip.org/download/libzip-1.6.1.tar.gz
-tar xvfz libzip-1.6.1.tar.gz
-cd libzip-1.6.1
-mkdir build
-cd build
-cmake ..
-make
-make install
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-
-#############################################################
-echo "Pulling PHP 7.4.6 source code ..."
+echo "Pulling PHP 8.0 source code ..."
 cd /root
-wget https://github.com/php/php-src/archive/PHP-7.4.6.zip
-unzip PHP-7.4.6.zip
+wget https://github.com/php/php-src/archive/PHP-8.0.zip
+unzip PHP-8.0.zip
 
-#############################################################
 echo "Getting ready for PHP compile ..."
-cd php-src-PHP-7.4.6
+cd php-src-PHP-8.0
 ./buildconf --force
 
-#############################################################
 echo "Run revised configure string ..."
 ./configure  \
     --prefix=/usr --sysconfdir=/etc --localstatedir=/var --datadir=/usr/share/php --mandir=/usr/share/man \
@@ -60,19 +44,14 @@ echo "Run revised configure string ..."
     --with-gettext=/usr --enable-mbstring --enable-pcntl --with-pspell --with-readline --with-snmp \
     --with-mysql-sock=/run/mysqld/mysqld.sock --with-curl --with-openssl --with-openssl-dir=/usr \
     --with-mhash --enable-intl --with-libdir=/lib64 --enable-sockets --with-libxml --enable-soap \
-    --enable-gd --with-jpeg --with-freetype --enable-exif --with-xsl --with-xmlrpc --with-pgsql \
-    --with-pdo-mysql=/usr --with-pdo-pgsql --with-mysqli --with-pdo-dblib --with-ldap --with-ldap-sasl \
+    --enable-gd --with-jpeg --with-freetype --enable-exif --with-xsl --with-ldap --with-ldap-sasl \
+    --with-pdo-mysql=/usr --with-pdo-pgsql --with-mysqli --with-pdo-dblib --with-pgsql \
     --enable-shmop --enable-sysvsem --enable-sysvshm --enable-sysvmsg --with-tidy --with-expat --with-enchant \
     --with-imap=/usr/local/imap-2007f --with-imap-ssl=/usr/include/openssl --with-kerberos=/usr/include/krb5 \
     --with-sodium=/usr --with-zip --enable-opcache --with-pear --with-ffi
 
-#############################################################
 echo "Making and installing PHP ..."
 make
+make test
 make install
-
 ```
-
-## TODO
-* configure Apache to use PHP via FPM
-
